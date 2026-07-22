@@ -34,8 +34,9 @@ public class JavaTrainerServiceImpl implements JavaTrainerService{
     public Question create(QuestionRequestDto request){
         Question question = Question.builder()
                             .question(request.getQuestion())
-                            .answers(request.getAnswers())
+                            .wrongAnswers(request.getAnswers())
                             .correctAnswer(request.getCorrectAnswer())
+                            .category(request.getCategory())
                             .build();
         return repository.save(question);
     }
@@ -56,7 +57,7 @@ public class JavaTrainerServiceImpl implements JavaTrainerService{
             question.setQuestion(request.getQuestion());
         }
         if(request.getAnswers() != null){
-            question.setAnswers(request.getAnswers());
+            question.setWrongAnswers(request.getAnswers());
         }
         if(request.getCorrectAnswer() != null){
             question.setCorrectAnswer(request.getCorrectAnswer());
@@ -84,5 +85,9 @@ public class JavaTrainerServiceImpl implements JavaTrainerService{
         return repository.findAll();
     }
 
+    @Override
+    public List<Question> getByCategory(String category){
+        return repository.findByCategory(category);
+    }
 
 }

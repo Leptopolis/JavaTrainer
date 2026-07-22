@@ -17,9 +17,12 @@ public class QuestionRequestDto{
     @NotBlank(message = "Question must not be null")
     private String question;
 
+    @NotBlank(message = "Category must not be blank")
+    private String category;
+
     @NotBlank(message = "Question must have answers")
     private List<String> answers;
 
-    @Positive(message = "CorrectAnswer must be positive")
-    private Integer correctAnswer;
+    @NotBlank(message = "CorrectAnswer must be positive")
+    private String correctAnswer;
 }

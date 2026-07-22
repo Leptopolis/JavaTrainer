@@ -17,4 +17,6 @@ public interface JavaTrainerService{
     public Question getById(Long id);
 
     public List<Question> getAll();
+
+    public List<Question> getByCategory(String category);
 }

@@ -7,23 +7,27 @@ import com.example.javatrainer.converter.StringListConverter;
 import java.util.List;
 
 @Entity
-@Table(name = "Question")
+@Table(name = "questions")
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class Question {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
+
+    @Column
+    private String category;
 
     @Column(unique = true, nullable = false)
     private String question;
     
     @Convert(converter = StringListConverter.class)
-    @Column(columnDefinition = "answers")
-    private List<String> answers;
+    @Column(columnDefinition = "wrong_answers")
+    private List<String> wrongAnswers;
 
     @Column()
-    private int correctAnswer;
+    private String correctAnswer;
 }
