@@ -3,7 +3,7 @@ package com.example.javatrainer.entity;
 import lombok.*;
 import jakarta.persistence.*;
 
-
+import com.example.javatrainer.converter.StringListConverter;
 import java.util.List;
 
 @Entity
@@ -20,7 +20,7 @@ public class Question {
     @Column(unique = true, nullable = false)
     private String question;
     
-    @Convert
+    @Convert(converter = StringListConverter.class)
     @Column(columnDefinition = "answers")
     private List<String> answers;
 
