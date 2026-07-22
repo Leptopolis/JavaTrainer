@@ -22,7 +22,7 @@ COPY src ./src
 RUN ./mvnw clean package -DskipTests -B
 
 # ---- Этап запуска ----
-FROM eclipse-temurin:17-jdk
+FROM eclipse-temurin:17-jdk 
 
 # Устанавливаем рабочую директорию
 WORKDIR /app
