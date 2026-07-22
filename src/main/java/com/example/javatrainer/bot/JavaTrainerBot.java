@@ -20,15 +20,22 @@ public class JavaTrainerBot extends TelegramLongPollingBot{
 
     @Override
     public void onUpdateReceived(Update update){
-        if(update.hasMessage() && update.getMessage().hasText()){
-            String text = update.getMessage().getText();
-            String chatId = update.getMessage().getChatId().toString();
+        try {
+            System.out.println("Получено обновление: " + update);
+            if(update.hasMessage() && update.getMessage().hasText()){
+                String text = update.getMessage().getText();
+                String chatId = update.getMessage().getChatId().toString();
 
-            if(text.equals("/start")){
-                send(chatId, "I'm bot");
+                if(text.equals("/start")){
+                    send(chatId, "I'm bot");
+                }
+
             }
-
+        } catch (Exception e) {
+            System.err.println("Ошибка при обработке обновления: " + e.getMessage());
+            e.printStackTrace();
         }
+
     }
 
     private void send(String chatId, String text){
