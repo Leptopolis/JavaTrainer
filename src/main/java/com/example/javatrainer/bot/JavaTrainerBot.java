@@ -39,6 +39,7 @@ public class JavaTrainerBot extends TelegramLongPollingBot{
                     List<List<InlineKeyboardButton>> rows = new ArrayList<>();
                     InlineKeyboardButton button = new InlineKeyboardButton("📝 Пройти тест");
                     String webAppUrl = "https://javaTrainer.onrender.com/index.html";
+                    button.setWebApp(new WebAppInfo(webAppUrl));
                     rows.add(List.of(button));
                     markup.setKeyboard(rows);
                     message.setReplyMarkup(markup);
