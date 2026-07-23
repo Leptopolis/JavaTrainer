@@ -7,6 +7,8 @@ import lombok.*;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Collections;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/questions")
@@ -28,4 +30,15 @@ public class JavaTrainerController{
     public Question getById(@PathVariable Long id){
         return service.getById(id);
     }
+    @GetMapping("/test")
+    public List<QuestionDto> getTest(@RequestParam(defaultValue = "10") int count){
+        List<Question> questions = service.getAll();
+        Collections.shuffle(questions);
+        return questions.stream()
+                .limit(count)
+                .map(q -> new QuestionDto(q.getId(), q.getQuestion(), q.getCorrectAnswer(), q.getWrongAnswers()))
+                .collect(Collectors.toList());
+    }
+
+    public record QuestionDto(Integer id, String question, String correctAnswer, List<String> wrongAnswers){}
 }

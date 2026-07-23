@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java Trainer</title>
+    <!-- Подключаем Telegram WebApp SDK -->
+    <!--<script src="https://telegram.org/js/telegram-web-app.js"></script> -->
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background: var(--tg-theme-bg-color, #fff);
+            color: var(--tg-theme-text-color, #000);
+            padding: 16px;
+            margin: 0;
+        }
+        .question-text {
+            font-size: 20px;
+            margin-bottom: 24px;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .option-btn {
+            background: var(--tg-theme-button-color, #2481cc);
+            color: var(--tg-theme-button-text-color, #fff);
+            border: none;
+            border-radius: 12px;
+            padding: 14px 20px;
+            font-size: 16px;
+            text-align: left;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .option-btn:active {
+            opacity: 0.7;
+        }
+        .progress {
+            font-size: 14px;
+            color: var(--tg-theme-hint-color, #999);
+            margin-bottom: 16px;
+        }
+        .result {
+            text-align: center;
+            padding: 20px;
+        }
+        .result h2 {
+            font-size: 28px;
+        }
+        .correct {
+            color: green;
+        }
+        .wrong {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div id="progress" class="progress"></div>
+        <div id="question" class="question-text"></div>
+        <div id="options" class="options"></div>
+        <div id="result" style="display: none;" class="result"></div>
+    </div>
+
+    <script>
+        // Инициализация WebApp
+        //const tg = window.Telegram.WebApp;
+       // tg.ready();
+        //tg.expand(); // развернуть на весь экран
+
+        // Получаем данные пользователя
+        //const user = tg.initDataUnsafe?.user || {};
+
+        let questions = [];
+        let currentIndex = 0;
+        let correctCount = 0;
+        let answered = false;
+
+        // Загружаем вопросы
+        async function loadQuestions() {
+            try {
+                const response = await fetch('/api/questions/test?count=10');
+                questions = await response.json();
+                if (questions.length === 0) {
+                    document.getElementById('question').textContent = 'Вопросы не найдены.';
+                    return;
+                }
+                showQuestion();
+            } catch (e) {
+                document.getElementById('question').textContent = 'Ошибка загрузки вопросов.';
+                console.error(e);
+            }
+        }
+
+        function showQuestion() {
+            if (currentIndex >= questions.length) {
+                showResult();
+                return;
+            }
+            const q = questions[currentIndex];
+            document.getElementById('progress').textContent = `Вопрос ${currentIndex + 1} из ${questions.length}`;
+            document.getElementById('question').textContent = q.question;
+
+            // Собираем все варианты (правильный + неправильные) и перемешиваем
+            const options = [q.correctAnswer, ...q.wrongAnswers];
+            shuffle(options);
+
+            const container = document.getElementById('options');
+            container.innerHTML = '';
+            options.forEach(option => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.textContent = option;
+                btn.onclick = () => handleAnswer(option, q.correctAnswer);
+                container.appendChild(btn);
+            });
+            answered = false;
+            document.getElementById('result').style.display = 'none';
+        }
+
+        function handleAnswer(selected, correct) {
+            if (answered) return;
+            answered = true;
+
+            // Подсвечиваем правильный/неправильный ответ
+            const buttons = document.querySelectorAll('.option-btn');
+            buttons.forEach(btn => {
+                if (btn.textContent === correct) {
+                    btn.style.background = 'green';
+                } else if (btn.textContent === selected && selected !== correct) {
+                    btn.style.background = 'red';
+                }
+                btn.disabled = true;
+            });
+
+            if (selected === correct) {
+                correctCount++;
+            }
+
+            // Переход к следующему вопросу через 1 секунду
+            setTimeout(() => {
+                currentIndex++;
+                showQuestion();
+            }, 1000);
+        }
+
+        function showResult() {
+            document.getElementById('progress').textContent = 'Тест завершён!';
+            document.getElementById('question').style.display = 'none';
+            document.getElementById('options').style.display = 'none';
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = `
+                <h2>Результат</h2>
+                <p>Вы ответили правильно на <strong>${correctCount}</strong> из <strong>${questions.length}</strong> вопросов.</p>
+                <button class="option-btn" onclick="location.reload()">Пройти заново</button>
+            `;
+
+            // Отправляем результат боту
+            tg.sendData(JSON.stringify({
+                action: 'quiz_result',
+                score: correctCount,
+                total: questions.length,
+                userId: user.id || 'unknown'
+            }));
+            // Закрываем приложение через 3 секунды (опционально)
+            // setTimeout(() => tg.close(), 3000);
+        }
+
+        // Функция перемешивания массива
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // Загружаем вопросы при старте
+        loadQuestions();
+    </script>
+</body>
+</html>

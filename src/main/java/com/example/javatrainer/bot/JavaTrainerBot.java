@@ -5,6 +5,11 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Component
 public class JavaTrainerBot extends TelegramLongPollingBot{
@@ -27,9 +32,22 @@ public class JavaTrainerBot extends TelegramLongPollingBot{
                 String chatId = update.getMessage().getChatId().toString();
 
                 if(text.equals("/start")){
-                    send(chatId, "I'm bot");
+                    SendMessage message = new SendMessage();
+                    message.setChatId(chatId);
+                    message.setText("Привет! Я помогу тебе проверить знания Java. Нажми кнопку ниже, чтобы начать тест.");
+                    InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
+                    List<List<InlineKeyboardButton>> rows = new ArrayList<>();
+                    InlineKeyboardButton button = new InlineKeyboardButton("📝 Пройти тест");
+                    String webAppUrl = "https://javaTrainer.onrender.com/index.html";
+                    rows.add(List.of(button));
+                    markup.setKeyboard(rows);
+                    message.setReplyMarkup(markup);
+                    try {
+                        execute(message);
+                    } catch (TelegramApiException e) {
+                        e.printStackTrace();
+                    }
                 }
-
             }
         } catch (Exception e) {
             System.err.println("Ошибка при обработке обновления: " + e.getMessage());

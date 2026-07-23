@@ -15,10 +15,10 @@ public class JavaTrainerApplication {
 		System.setProperty("https.proxyHost", "cluster-node1.mosline.ru");
 		System.setProperty("https.proxyPort", "443");
 		System.out.println("HTTP proxy host: " + System.getProperty("http.proxyHost"));
-System.out.println("HTTP proxy port: " + System.getProperty("http.proxyPort"));
-System.out.println("HTTPS proxy host: " + System.getProperty("https.proxyHost"));
-System.out.println("HTTPS proxy port: " + System.getProperty("https.proxyPort"));
-System.out.println("proxy set: " + System.getProperty("java.net.useSystemProxies"));
+        System.out.println("HTTP proxy port: " + System.getProperty("http.proxyPort"));
+        System.out.println("HTTPS proxy host: " + System.getProperty("https.proxyHost"));
+        System.out.println("HTTPS proxy port: " + System.getProperty("https.proxyPort"));
+        System.out.println("proxy set: " + System.getProperty("java.net.useSystemProxies"));
 		System.setProperty("java.net.preferIPv4Stack", "true");
 		System.out.println("preferIPv4Stack = " + System.getProperty("java.net.preferIPv4Stack"));
         // 1. Запускаем Spring Boot приложение
@@ -28,13 +28,13 @@ System.out.println("proxy set: " + System.getProperty("java.net.useSystemProxies
         JavaTrainerBot bot = context.getBean(JavaTrainerBot.class);
 
         // 3. Регистрируем бота в Telegram API
-        try {
+        /*try {
             TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
             botsApi.registerBot(bot);
             System.out.println("✅ Бот успешно запущен!");
         } catch (TelegramApiException e) {
             System.err.println("❌ Ошибка регистрации бота: " + e.getMessage());
             e.printStackTrace();
-        }
+        }*/
     }
 }
