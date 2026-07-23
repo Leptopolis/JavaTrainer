@@ -28,13 +28,13 @@ public class JavaTrainerApplication {
         JavaTrainerBot bot = context.getBean(JavaTrainerBot.class);
 
         // 3. Регистрируем бота в Telegram API
-        /*try {
+        try {
             TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
             botsApi.registerBot(bot);
             System.out.println("✅ Бот успешно запущен!");
         } catch (TelegramApiException e) {
             System.err.println("❌ Ошибка регистрации бота: " + e.getMessage());
             e.printStackTrace();
-        }*/
+        }
     }
 }
